@@ -46,14 +46,14 @@ public class BackupSmallDownloads implements Callable<Void> {
                 .filter(p -> Files.exists(p, LinkOption.NOFOLLOW_LINKS))
                 .filter(p -> !Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS))
                 .filter(p -> !ignored.matches(p.getFileName()))
-                .forEach(srcFile -> backupConditional(srcFile, dest, maxSize));
+                .forEach(this::backupConditional);
         return null;
     }
 
-    private static void backupConditional(Path srcFile, Path dest, long maxFileSizeBytes) {
+    private void backupConditional(Path srcFile) {
         try {
             long srcFileSize = size(srcFile);
-            if (srcFileSize <= maxFileSizeBytes) {
+            if (srcFileSize <= maxSize) {
                 Path fileName = srcFile.getFileName();
                 Path destFile = dest.resolve(fileName);
                 if (Files.exists(destFile)) {
