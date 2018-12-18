@@ -14,11 +14,11 @@ import java.util.concurrent.Callable;
 
 import static java.nio.file.Files.size;
 
-public class BackupSmallDownloads implements Callable<Void> {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BackupSmallDownloads.class);
+public class BackupSmallFiles implements Callable<Void> {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BackupSmallFiles.class);
 
     private static final Map<String, ExFunction<Path, Object>> WARN_DIFF_PROPS = Map.of(
-            "modified time", BackupSmallDownloads::lastModifiedSec,
+            "modified time", BackupSmallFiles::lastModifiedSec,
             "size", Files::size
     );
 
@@ -37,17 +37,27 @@ public class BackupSmallDownloads implements Callable<Void> {
     private String ignore;
 
     public static void main(String[] args)  {
-        CommandLine.call(new BackupSmallDownloads(), args);
+        CommandLine.call(new BackupSmallFiles(), args);
     }
 
     @Override public Void call() throws Exception {
         PathMatcher ignored = FileSystems.getDefault().getPathMatcher(ignore);
+        checkDir(src);
+        checkDir(dest);
         Files.list(src)
                 .filter(p -> Files.exists(p, LinkOption.NOFOLLOW_LINKS))
                 .filter(p -> !Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS))
                 .filter(p -> !ignored.matches(p.getFileName()))
                 .forEach(this::backupConditional);
         return null;
+    }
+
+    private void checkDir(Path path) throws IOException {
+        if (!Files.exists(path)) {
+            throw new IOException("Directory does not exist: " + path);
+        } else if (!Files.isDirectory(path)) {
+            throw new IOException("This is not a directory: " + path);
+        }
     }
 
     private void backupConditional(Path srcFile) {
