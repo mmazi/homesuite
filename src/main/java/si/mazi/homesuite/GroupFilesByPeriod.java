@@ -1,6 +1,7 @@
 package si.mazi.homesuite;
 
 import picocli.CommandLine;
+import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
@@ -17,11 +18,10 @@ import java.util.concurrent.Callable;
 import static si.mazi.homesuite.Utils.Action.MOVE;
 import static si.mazi.homesuite.Utils.checkDir;
 
-/**
- * Copies and groups files from source directories into a subdirectory structure in the destination directory, where Names of subdirectories
- * correspond to years and months of the files' timestamps. Subdirectories are created if necessary. Destination files are never overwritten;
- * warnings are printed if destination file exists and its timestamp or size is different from the source file's.
- */
+@Command(description = "Copies and groups files from source directories into a subdirectory structure " +
+        "in the destination directory, where names of subdirectories correspond to years and months of the files' timestamps. " +
+        "Subdirectories are created if necessary. Destination files are never overwritten; warnings are printed if " +
+        "destination file exists and its timestamp or size is different from the source file's.")
 public class GroupFilesByPeriod implements Callable<Void> {
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(GroupFilesByPeriod.class);
