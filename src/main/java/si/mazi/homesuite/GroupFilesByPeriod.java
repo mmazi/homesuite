@@ -52,15 +52,20 @@ public class GroupFilesByPeriod implements Callable<Void> {
 
         for (Path sourceDir : sourceDirs) {
             log.info("Moving stuff from {}...", sourceDir);
-            checkDir(sourceDir);
-            long filesAffected = Files.list(sourceDir)
-                    .filter(p -> !Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS))
-                    .filter(p -> !ignored.matches(p.getFileName()))
-                    .filter(p -> !Utils.isHidden(p))
-                    .map(this::copyOrWarn)
-                    .filter(Boolean::booleanValue)
-                    .count();
-            log.info("Moved {} files.", filesAffected);
+            if (!Files.exists(sourceDir)) {
+                log.warn("Directory does not exist: {}", sourceDir);
+            } else if (!Files.isDirectory(sourceDir)) {
+                log.error("This is not a directory: {}", sourceDir);
+            } else {
+                long filesAffected = Files.list(sourceDir)
+                        .filter(p -> !Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS))
+                        .filter(p -> !ignored.matches(p.getFileName()))
+                        .filter(p -> !Utils.isHidden(p))
+                        .map(this::copyOrWarn)
+                        .filter(Boolean::booleanValue)
+                        .count();
+                log.info("Moved {} files.", filesAffected);
+            }
         }
 
         log.info("Done.");
