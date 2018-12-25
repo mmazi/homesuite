@@ -53,9 +53,9 @@ public class GroupFilesByPeriod implements Callable<Void> {
         for (Path sourceDir : sourceDirs) {
             log.info("Moving stuff from {}...", sourceDir);
             if (!Files.exists(sourceDir)) {
-                log.warn("Directory does not exist: {}", sourceDir);
+                log.warn("Source directory does not exist: {}", sourceDir);
             } else if (!Files.isDirectory(sourceDir)) {
-                log.error("This is not a directory: {}", sourceDir);
+                log.error("Source is not a directory: {}", sourceDir);
             } else {
                 long filesAffected = Files.list(sourceDir)
                         .filter(p -> !Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS))
