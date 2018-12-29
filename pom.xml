@@ -45,11 +45,11 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <finalName>BackupSmallFiles</finalName>
+                    <finalName>GroupFilesByPeriod</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>si.mazi.homesuite.BackupSmallFiles</mainClass>
+                            <mainClass>si.mazi.homesuite.GroupFilesByPeriod</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
