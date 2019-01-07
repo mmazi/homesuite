@@ -44,7 +44,7 @@ enum Utils {
             }
             String diffs = joiner.toString();
             if (diffs.isEmpty()) {
-                log.trace("{} already exists.", destFile);
+                action.logExists(destFile);
             } else {
                 log.info("Files differ in {}: {}", diffs, fileName);
             }
@@ -96,7 +96,11 @@ enum Utils {
 
     public enum Action {
         COPY("Copying", Files::copy),
-        MOVE("Moving", Files::move),
+        MOVE("Moving", Files::move) {
+            @Override void logExists(Path destFile) {
+                log.info("{} already exists.", destFile);
+            }
+        },
         DUMMY("Visiting", (s, t) -> {/* do nothing*/}),
 
         ;
@@ -108,5 +112,8 @@ enum Utils {
             this.action = action;
         }
 
+        void logExists(Path destFile) {
+            Utils.log.trace("{} already exists.", destFile);
+        }
     }
 }
