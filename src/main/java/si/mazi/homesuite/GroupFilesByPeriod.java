@@ -50,6 +50,7 @@ public class GroupFilesByPeriod implements Callable<Void> {
         PathMatcher ignored = FileSystems.getDefault().getPathMatcher(ignore);
         checkDir(destDir);
 
+        long totalFiles = 0;
         for (Path sourceDir : sourceDirs) {
             log.info("Moving stuff from {}...", sourceDir);
             if (!Files.exists(sourceDir)) {
@@ -65,10 +66,11 @@ public class GroupFilesByPeriod implements Callable<Void> {
                         .filter(Boolean::booleanValue)
                         .count();
                 log.info("Moved {} files.", filesAffected);
+                totalFiles += filesAffected;
             }
         }
 
-        log.info("Done.");
+        log.info("Done. Total: {} files.", totalFiles);
         return null;
     }
 
